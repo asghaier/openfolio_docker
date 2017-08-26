@@ -10,8 +10,8 @@
     "drupal-composer/drupal-scaffold": "^2.0.0",
     "cweagans/composer-patches": "1.5.0",
     "drush/drush": "8.*@stable",
-    "asghaier/openfolio": "dev-8.x-1.x",
-    "asghaier/openfolio_scripts": "dev-master"
+    "asghaier/openfolio": "8.x-1.x",
+    "asghaier/openfolio_scripts": "master"
   },
   "require-dev": {
     "jcalderonzumba/gastonjs": "~1.0.2",
