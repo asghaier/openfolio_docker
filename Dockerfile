@@ -28,7 +28,7 @@ RUN docker-php-ext-install exif
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
-# Install Open Social via composer.
+# Install Openfolio via composer.
 RUN rm -f /var/www/composer.lock
 RUN rm -rf /root/.composer
 

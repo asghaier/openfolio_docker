@@ -1,5 +1,5 @@
-FROM goalgorilla/open_social_docker:latest
-MAINTAINER devel@goalgorilla.com
+FROM asghaier/openfolio_docker:latest
+MAINTAINER ahmed@sghaier.com
 
 # Install development related packages.
 RUN apt-get update && apt-get install -y \

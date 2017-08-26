@@ -1,5 +1,5 @@
-FROM goalgorilla/open_social_docker:latest
-MAINTAINER devel@goalgorilla.com
+FROM asghaier/openfolio_docker:latest
+MAINTAINER ahmed@sghaier.com
 
 ADD php.ini /usr/local/etc/php/php.ini
 

@@ -1,6 +1,6 @@
 {
-  "name": "goalgorilla/social_docker",
-  "description": "Social docker template for composer based Open Social projects.",
+  "name": "asghaier/openfolio_docker",
+  "description": "Openfolio docker template for composer based Openfolio projects.",
   "type": "project",
   "license": "GPL-2.0+",
   "minimum-stability": "dev",
@@ -10,8 +10,8 @@
     "drupal-composer/drupal-scaffold": "^2.0.0",
     "cweagans/composer-patches": "1.5.0",
     "drush/drush": "8.*@stable",
-    "goalgorilla/open_social": "^1.0",
-    "goalgorilla/open_social_scripts": "dev-master"
+    "asghaier/openfolio": "^1.0",
+    "asghaier/openfolio_scripts": "dev-master"
   },
   "require-dev": {
     "jcalderonzumba/gastonjs": "~1.0.2",
@@ -53,8 +53,8 @@
       "html/modules/contrib/{$name}": [
         "type:drupal-module"
       ],
-      "html/profiles/contrib/social": [
-        "goalgorilla/open_social"
+      "html/profiles/contrib/openfolio": [
+        "asghaier/openfolio"
       ],
       "html/profiles/contrib/{$name}": [
         "type:drupal-profile"
@@ -63,7 +63,7 @@
         "type:drupal-theme"
       ],
       "scripts/{$name}": [
-        "goalgorilla/open_social_scripts"
+        "asghaier/openfolio_scripts"
       ],
       "drush/contrib/{$name}": [
         "type:drupal-drush"
