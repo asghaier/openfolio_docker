@@ -1,48 +1,40 @@
-FROM drupal:8
-MAINTAINER devel@goalgorilla.com
+FROM goalgorilla/open_social_docker:latest
+MAINTAINER ahmed@sghaier.com
 
-# Install packages.
-RUN apt-get update && apt-get install -y \
-  php-pclzip \
-  zlib1g-dev \
-  mysql-client \
-  git \
-  ssmtp \
-  nano \
-  vim && \
-  apt-get clean
+### CI SPECIFIC - START ###
+### - Making changes here? Also apply in ../ci/Dockerfile ###
 
-ADD mailcatcher-ssmtp.conf /etc/ssmtp/ssmtp.conf
+# Install composer dependencies.
+RUN composer install --prefer-dist --no-interaction
 
-RUN echo "hostname=goalgorilla.com" >> /etc/ssmtp/ssmtp.conf
-RUN echo 'sendmail_path = "/usr/sbin/ssmtp -t"' > /usr/local/etc/php/conf.d/mail.ini
+# Unfortunately, adding the composer vendor dir to the PATH doesn't seem to work. So:
+RUN ln -s /root/.composer/vendor/bin/behat /usr/local/bin/behat
+RUN ln -s /root/.composer/vendor/bin/phpunit /usr/local/bin/phpunit
+RUN ln -s /var/www/vendor/bin/drupal /usr/local/bin/drupal
+
+### CI SPECIFIC - END ###
+
+### DEV SPECIFIC - START ###
 
 ADD php.ini /usr/local/etc/php/php.ini
 
-# Install extensions
-RUN docker-php-ext-install zip
-RUN docker-php-ext-install bcmath
-RUN docker-php-ext-install exif
+# Xdebug.
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
+RUN sed -i '1 a xdebug.remote_autostart=true' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN sed -i '1 a xdebug.remote_mode=req' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN sed -i '1 a xdebug.remote_handler=dbgp' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN sed -i '1 a xdebug.remote_connect_back=1 ' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN sed -i '1 a xdebug.remote_port=9000' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN sed -i '1 a xdebug.remote_host=127.0.0.1' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN sed -i '1 a xdebug.remote_enable=1' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-# Install Composer.
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
+RUN php -r "opcache_reset();"
 
-# Install Openfolio via composer.
-RUN rm -f /var/www/composer.lock
-RUN rm -rf /root/.composer
+# Contains the Mac hack to get the permissions to work for development.
+# Set user 1000 and group staff to www-data, enables write permission.
+# https://github.com/boot2docker/boot2docker/issues/581#issuecomment-114804894
+RUN usermod -u 1000 www-data
+RUN usermod -G staff www-data
 
-ADD composer.json /var/www/composer.json
-WORKDIR /var/www/
-RUN composer install --prefer-dist --no-interaction --no-dev
-
-WORKDIR /var/www/html/
-RUN chown -R www-data:www-data *
-
-# Unfortunately, adding the composer vendor dir to the PATH doesn't seem to work. So:
-RUN ln -s /var/www/vendor/bin/drush /usr/local/bin/drush
-
-RUN php -r 'opcache_reset();'
-
-# Fix shell.
-RUN echo "export TERM=xterm" >> ~/.bashrc
+### DEV SPECIFIC - END ###
